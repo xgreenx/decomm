@@ -29,9 +29,11 @@
   },
   "module": "true",
   "scripts": {
+    "chain": "europa --tmp",
     "build": "npx redspot compile",
     "test": "npx redspot test",
-    "deploy": "npx redspot run scripts/deploy.ts --no-compile",
-    "gitsub": "git submodule update --remote --recursive"
+    "deploy": "npx redspot run scripts/deploy.ts --no-compile && cp -R artifacts/*.{json,js} interface/src/abis",
+    "gsub": "git submodule update --remote --recursive",
+    "fe": "cd interface && yarn start"
   }
 }

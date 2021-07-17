@@ -1,4 +1,5 @@
 import { patract, network } from 'redspot'
+const fs = require('fs')
 
 const { getContractFactory } = patract
 const { createSigner, keyring, api } = network
@@ -23,15 +24,18 @@ async function run() {
   console.log('')
   console.log('The contract address: ', contract.address.toString())
 
-  const balanceOfAlice = await contract.query.balanceOf(signer)
-  console.log('Balance of Alice: ', balanceOfAlice.output?.toHuman())
+  // const balanceOfAlice = await contract.query.balanceOf(signer)
+  // console.log('Balance of Alice: ', balanceOfAlice.output?.toHuman())
 
-  await contract.tx.transfer(receiver, 10000)
+  // await contract.tx.transfer(receiver, 10000)
 
-  const balanceOfBob = await contract.query.balanceOf(receiver)
-  console.log('Balance of Bob: ', balanceOfBob.output?.toHuman())
+  // const balanceOfBob = await contract.query.balanceOf(receiver)
+  // console.log('Balance of Bob: ', balanceOfBob.output?.toHuman())
 
   api.disconnect()
+
+  // Export deployed contract address for the FE-interface
+  fs.writeFileSync('artifacts/contract.address.js', 'export const DEPLOYED_ADDRESS = "' + contract.address.toString() + '"')
 }
 
 run().catch((err) => {
