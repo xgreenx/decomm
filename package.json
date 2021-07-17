@@ -31,6 +31,7 @@
   "scripts": {
     "build": "npx redspot compile",
     "test": "npx redspot test",
-    "deploy": "npx redspot run scripts/deploy.ts --no-compile     "
+    "deploy": "npx redspot run scripts/deploy.ts --no-compile",
+    "gitsub": "git submodule update --remote --recursive"
   }
 }
