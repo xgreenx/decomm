@@ -10,13 +10,17 @@ describe("ERC20", () => {
     return api.disconnect();
   });
 
-  async function setup() {
+  async function setup({
+    tokenName = 'Atomikoin',
+    tokenSymbol = 'ATK',
+    tokenInitialSupply = 1000
+  } = {}) {
     await api.isReady
     const signerAddresses = await getAddresses();
     const Alice = signerAddresses[0];
     const sender = await getRandomSigner(Alice, "10000 UNIT");
     const contractFactory = await getContractFactory("erc20", sender.address);
-    const contract = await contractFactory.deploy("new", "1000");
+    const contract = await contractFactory.deploy("new", tokenName, tokenSymbol, tokenInitialSupply);
     const abi = artifacts.readArtifact("erc20");
     const receiver = await getRandomSigner();
 
@@ -66,5 +70,26 @@ describe("ERC20", () => {
     await expect(
       contract.connect(emptyAccount).tx.transfer(sender.address, 7)
     ).to.not.emit(contract, "Transfer");
+  });
+
+  it("Assigns metadata", async () => {
+    const tokenName = 'We are the champions';
+    const tokenSymbol = 'WATCH';
+    const tokenInitialSupply = 12345;
+    const { contract, sender } = await setup({ tokenName, tokenSymbol, tokenInitialSupply });
+
+    const decimalsResult = await contract.query.decimals();
+    expect(decimalsResult.output).to.equal(18);
+
+    const symbolResult = await contract.query.symbol();
+    // FIXME: use .to.eq assertion
+    expect(symbolResult.output?.toHuman()).to.contain(tokenSymbol);
+
+    const nameResult = await contract.query.name();
+    // FIXME: use .to.eq assertion
+    expect(nameResult.output?.toHuman()).to.contain(tokenName);
+
+    const balanceOfResult = await contract.query.balanceOf(sender.address);
+    expect(balanceOfResult.output).to.equal(tokenInitialSupply)
   });
 });

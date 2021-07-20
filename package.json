@@ -35,5 +35,8 @@
     "deploy": "npx redspot run scripts/deploy.ts --no-compile && cp -R artifacts/*.{json,js} interface/src/abis",
     "gsub": "git submodule update --remote --recursive",
     "fe": "cd interface && yarn start"
+  },
+  "devDependencies": {
+    "@types/node": "^16.3.3"
   }
 }
