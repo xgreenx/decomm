@@ -24,8 +24,7 @@ mod erc20 {
         collections::HashMap as StorageHashMap,
         lazy::Lazy,
     };
-    #[cfg(not(feature = "ink-as-dependency"))]
-    use ink_prelude::{string::String};
+    use ink_prelude::string::String;
 
     /// A simple ERC-20 contract.
     #[ink(storage)]
@@ -96,6 +95,7 @@ mod erc20 {
                 to: Some(caller),
                 value: initial_supply,
             });
+
             instance
         }
 
