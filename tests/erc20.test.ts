@@ -72,8 +72,8 @@ describe("ERC20", () => {
     ).to.not.emit(contract, "Transfer");
   });
 
-  it("Assigns metadata", async () => {
-    const tokenName = 'We are the champions';
+  it.only("Assigns metadata", async () => {
+    const tokenName = 'tko coin';
     const tokenSymbol = 'WATCH';
     const tokenInitialSupply = 12345;
     const { contract, sender } = await setup({ tokenName, tokenSymbol, tokenInitialSupply });
@@ -82,12 +82,10 @@ describe("ERC20", () => {
     expect(decimalsResult.output).to.equal(18);
 
     const symbolResult = await contract.query.symbol();
-    // FIXME: use .to.eq assertion
-    expect(symbolResult.output?.toHuman()).to.contain(tokenSymbol);
+    expect(symbolResult.output?.toHuman()).to.equal(tokenSymbol);
 
     const nameResult = await contract.query.name();
-    // FIXME: use .to.eq assertion
-    expect(nameResult.output?.toHuman()).to.contain(tokenName);
+    expect(nameResult.output?.toHuman()).to.equal(tokenName);
 
     const balanceOfResult = await contract.query.balanceOf(sender.address);
     expect(balanceOfResult.output).to.equal(tokenInitialSupply)

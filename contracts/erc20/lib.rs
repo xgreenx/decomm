@@ -25,7 +25,7 @@ mod erc20 {
         lazy::Lazy,
     };
     #[cfg(not(feature = "ink-as-dependency"))]
-    use ink_prelude::string::String;
+    use ink_prelude::{string::String};
 
     /// A simple ERC-20 contract.
     #[ink(storage)]

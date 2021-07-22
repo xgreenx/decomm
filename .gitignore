@@ -1,4 +1,6 @@
 .cache
+.DS_store
+.idea
 artifacts
 node_modules
 contracts/target

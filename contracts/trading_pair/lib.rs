@@ -28,7 +28,7 @@ mod trading_pair {
 
         #[ink(message)]
         pub fn get_info(&self) -> (Balance, Balance) {
-            let from = self::env().caller();
+            let from = Self::env().caller();
 
             let token_a_balance = self.token_a.balance_of(from.clone());
             let token_b_balance = self.token_b.balance_of(from.clone());
