@@ -25,6 +25,10 @@ crate-type = [
 	"cdylib",
 ]
 
+# You need to add this if you are using division(`/`) in your contract
+[profile.release]
+overflow-checks = false
+
 [features]
 default = ["std"]
 std = [
@@ -34,8 +38,14 @@ std = [
     "ink_primitives/std",
     "ink_lang/std",
     "ink_prelude/std",
+
     "scale/std",
     "scale-info/std",
+    "scale/std",
+    "scale-info/std",
+
+    # You need to include it, otherwise during generation of metadata you will fail,
+    # because rust will not build code related to `std` feature
     "erc20/std",
 ]
 ink-as-dependency = []
