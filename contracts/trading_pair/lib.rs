@@ -5,7 +5,10 @@ use ink_lang as ink;
 #[ink::contract]
 mod trading_pair {
     use erc20::Erc20;
+    #[cfg(not(feature = "ink-as-dependency"))]
     use ink_storage::Lazy;
+    use ink_env::call::FromAccountId;
+    use ink_prelude::string::String;
 
     #[ink(storage)]
     pub struct TradingPair {
@@ -15,25 +18,9 @@ mod trading_pair {
 
     impl TradingPair {
         #[ink(constructor)]
-        pub fn new(token_a_code_hash: Hash, token_b_code_hash: Hash) -> Self {
-            let total_balance = Self::env().balance();
-            let salt = 1u8.to_le_bytes();
-
-            // TODO: use from_account_id to instantiate an existing contract
-            let token_a = Erc20::new("token a".into(), "TKNA".into(), 123)
-                .endowment(total_balance / 3)
-                // why is code hash needed if I provide the erc20::Erc20 struct in this scope
-                .code_hash(token_a_code_hash)
-                .salt_bytes(salt)
-                .instantiate()
-                .expect("failed at instantiating the token A Erc20 contract");
-
-            let token_b = Erc20::new("token b".into(), "TKNB".into(), 456)
-                .endowment(total_balance / 3)
-                .code_hash(token_b_code_hash)
-                .salt_bytes(salt)
-                .instantiate()
-                .expect("failed at instantiating the token B Erc20 contract");
+        pub fn new(token_a_id: AccountId, token_b_id: AccountId) -> Self {
+            let token_a = Erc20::from_account_id(token_a_id);
+            let token_b = Erc20::from_account_id(token_b_id);
 
             Self {
                 token_a: Lazy::new(token_a),
@@ -42,13 +29,11 @@ mod trading_pair {
         }
 
         #[ink(message)]
-        pub fn get_info(&self) -> (Balance, Balance) {
-            let from = Self::env().caller();
+        pub fn get_info(&self) -> (String, String) {
+            let token_a = self.token_a.symbol();
+            let token_b = self.token_b.symbol();
 
-            let token_a_balance = self.token_a.balance_of(from.clone());
-            let token_b_balance = self.token_b.balance_of(from.clone());
-
-            (token_a_balance, token_b_balance)
+            (token_a, token_b)
         }
     }
 }
